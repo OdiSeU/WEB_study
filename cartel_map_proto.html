@@ -2,5 +2,143 @@
   <canvas id="cartelMap"></canvas>
 </body>
 <script>
+	const cartelMap = document.getElementById('cartelMap');
+	cartelMap.width = 960;
+	cartelMap.height = 540;
+	cartelMap.style.backgroundColor = "#DDD";
 
+	const pressedKey = [0,0,0,0]; //up left down right
+</script>
+<script>
+	function Map(cnvs) {
+		this.canvas = cnvs;
+		this.ctx = cnvs.getContext('2d');
+		this.width = cnvs.offsetWidth;
+		this.height = cnvs.offsetHeight;
+		this.blockSize = 60;
+		this.rows = Math.floor(this.height / this.blockSize);
+		this.cols = Math.floor(this.width / this.blockSize);
+		this.blockArr = new Array(this.rows);
+		for(let i=0; i<this.rows; i++) {
+			this.blockArr[i] = new Array(this.cols);
+			for(let j=0; j<this.cols; j++) {
+				this.blockArr[i][j] = 0;
+			}
+		}
+
+		this.showGrid = false;
+	}
+
+	Map.prototype = {
+		setFloor : function(row, col, width, height) {
+			for(let i=0; i<height; i++) {
+				for(let j=0; j<width; j++) {
+					this.blockArr[row+i][col+j] ^= 1;
+				}
+			}
+		},
+		draw : function() {
+			this.ctx.clearRect(0, 0, this.canvas.offsetWidth, this.canvas.offsetHeight);
+			this.ctx.fillStyle = "#A00";
+			this.ctx.strokeStyle = "#000";
+			for(let i=0; i<this.rows; i++) {
+				for(let j=0; j<this.cols; j++) {
+					if(this.blockArr[i][j]) this.ctx.fillRect(this.blockSize * j, this.blockSize * i, this.blockSize, this.blockSize);
+					if(this.showGrid) this.ctx.strokeRect(this.blockSize * j, this.blockSize * i, this.blockSize, this.blockSize);
+				}
+			}
+		}
+	}
+</script>
+<script>
+	function Player(cnvs, map) {
+		this.canvas = cnvs;
+		this.ctx = cnvs.getContext('2d');
+		this.map = map;
+		this.width = 20;
+		this.height = 30;
+		this.x = this.width/2;
+		this.y = this.height/2;
+		this.vx = 0;
+		this.vy = 0;
+		this.speed = 3;
+		this.jump = 10;
+	}
+	Player.prototype = {
+		clear : function() {
+			this.ctx.clearRect(this.getLeft(), this.getTop()-1, this.width, this.height+2);
+		},
+		draw : function() {
+			this.ctx.fillStyle = "#0D0";
+			this.ctx.fillRect(this.getLeft(), this.getTop(), this.width, this.height);
+		},
+		tick : function() {
+			if(pressedKey[0]) {
+				this.vy = -this.jump;
+			}
+			if(pressedKey[1]) {
+				this.x -= this.speed+this.vx;
+			}
+			if(pressedKey[2]) {
+
+			}
+			if(pressedKey[3]) {
+				this.x += this.speed+this.vx;
+			}
+			this.vy += 0.98;
+			this.y += this.vy;
+
+			let posL = this.getPos(this.getLeft(), this.getDown());
+			let posR = this.getPos(this.getRight(), this.getDown());
+
+			if(this.getDown()>this.canvas.offsetHeight) {
+				this.y = this.canvas.offsetHeight-this.height/2;
+				this.vy = 0;
+			} else {
+				let leftFoot = this.map.blockArr[posL.row][posL.col];
+				let rightFoot = this.map.blockArr[posR.row][posR.col]
+				if(leftFoot || rightFoot) {
+					this.y = posL.row*this.map.blockSize-this.height/2;
+					this.vy = 0;
+				}
+			}
+		},
+		getPos : function(x, y) { return {row : Math.floor(y/this.map.blockSize), col : Math.floor(x/this.map.blockSize)}; },
+		getTop : function() { return this.y - this.height/2; },
+		getLeft : function() { return this.x - this.width/2; },
+		getDown : function() { return this.y + this.height/2; },
+		getRight : function() { return this.x + this.width/2; }
+	}
+</script>
+<script>
+	const map = new Map(cartelMap);
+	const player = new Player(cartelMap, map);
+
+	function update() {
+		player.clear();
+		player.tick();
+		player.draw();
+	}
+
+	window.onload = function() {
+		setInterval(update, 20);
+	}
+	window.onclick = function() { map.showGrid ^= true; map.draw(); }
+	window.onkeydown = function(e) {
+		if(e.key=="ArrowUp") 	pressedKey[0] = 1;
+		if(e.key=="ArrowLeft") 	pressedKey[1] = 1;
+		if(e.key=="ArrowDown") 	pressedKey[2] = 1;
+		if(e.key=="ArrowRight") pressedKey[3] = 1;
+	}
+	window.onkeyup = function(e) {
+		if(e.key=="ArrowUp") 	pressedKey[0] = 0;
+		if(e.key=="ArrowLeft") 	pressedKey[1] = 0;
+		if(e.key=="ArrowDown") 	pressedKey[2] = 0;
+		if(e.key=="ArrowRight") pressedKey[3] = 0;
+	}
+	cartelMap.onclick = function(e) {
+		map.setFloor(Math.floor(e.y/map.blockSize), Math.floor(e.x/map.blockSize),1,1);
+		map.draw();
+		e.cancelBubble = true;
+	}
 </script>
