@@ -90,14 +90,16 @@
 
 			let posL = this.getPos(this.getLeft(), this.getDown());
 			let posR = this.getPos(this.getRight(), this.getDown());
+			let posBody = this.getPos(this.x, this.y);
 
 			if(this.getDown()>this.canvas.offsetHeight) {
 				this.y = this.canvas.offsetHeight-this.height/2;
 				this.vy = 0;
 			} else {
 				let leftFoot = this.map.blockArr[posL.row][posL.col];
-				let rightFoot = this.map.blockArr[posR.row][posR.col]
-				if(leftFoot || rightFoot) {
+				let rightFoot = this.map.blockArr[posR.row][posR.col];
+				let pBody = this.map.blockArr[posBody.row][posBody.col];
+				if((leftFoot || rightFoot) && this.vy>0 &&!pBody) {
 					this.y = posL.row*this.map.blockSize-this.height/2;
 					this.vy = 0;
 				}
@@ -117,6 +119,7 @@
 	function update() {
 		player.clear();
 		player.tick();
+		map.draw();
 		player.draw();
 	}
 
