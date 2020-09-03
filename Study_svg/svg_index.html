@@ -30,7 +30,14 @@
 			<polyline points='30,30 70,30 50,60' style='fill:none; stroke:#000; storke-width:1'/>
 		</svg>
 		<svg width='100' height ='100'>
-			<text x='5' y='30' style='font-size: 32px; fill:none; stroke:#000; storke-width:1'>SVG!</text>
+			<text x='5' y='50' style='font-size: 32px; fill:none; stroke:#000; storke-width:1'>SVG!</text>
+		</svg>
+
+		<svg width='100' height ='100'>
+			<symbol id='myPolyLine'>
+				<polyline points='30,30 70,30 50,60' style='fill:none; stroke:#000; storke-width:1'/>
+			</symbol>
+			<use xlink:href='myPolyLine' x=3 y=10 />
 		</svg>
 	</body>
 </html>
