@@ -1,0 +1,64 @@
+<html>
+	<head>
+		<style>
+			svg {
+				border : 1px solid #D00;
+				position: absolute;
+				left : 40px;
+				margin : 5px;
+			}
+		</style>
+	</head>
+	<body>
+		<svg id='box' width='500' height ='500' viewbox='-100 -100 400 400' >
+      <defs>
+        <g id='myPolyLine'>
+  				<polyline points='30,30 70,30 50,60' style='fill:none; stroke:#000; storke-width:1'/>
+  			</g>
+      </defs>
+			<use xlink:href='#myPolyLine' x='3' y='10' />
+      <rect x='60' y='20' width='20' height='30'/>
+		</svg>
+	</body>
+	<script>
+		const box = document.querySelector('#box');
+		box.setViewBox = function(rect) {
+			box.viewBox.baseVal.x = rect.x;
+			box.viewBox.baseVal.y = rect.y;
+			box.viewBox.baseVal.width = rect.width;
+			box.viewBox.baseVal.height = rect.height;
+		}
+		box.getViewBox = function() {
+			return {
+				x : box.viewBox.baseVal.x,
+				y : box.viewBox.baseVal.y,
+				width : box.viewBox.baseVal.width,
+				height : box.viewBox.baseVal.height
+			};
+		}
+
+		box.onmousewheel = function(e) {
+			console.log(e);
+			let vb = this.getViewBox();
+			console.log(e.offsetX, e.offsetY, vb.x, vb.y, vb.width, vb.height);
+			if(e.deltaY > 0) { //zoom-in
+				vb.width *= 1.1;
+				vb.height *= 1.1;
+			} else { // zoom-out
+				vb.width *= 0.9;
+				vb.height *= 0.9;
+			}
+			vb.x = vb.x + e.layerX - vb.width/2;
+			vb.y = vb.y + e.layerY - vb.height/2;
+			this.setViewBox(vb);
+			console.log(this.getViewBox());
+		}
+
+		window.onkeydown = function(e) {
+			if(e.key=='w') box.viewBox.baseVal.y += 10;
+			if(e.key=='a') box.viewBox.baseVal.x += 10;
+			if(e.key=='s') box.viewBox.baseVal.y -= 10;
+			if(e.key=='d') box.viewBox.baseVal.x -= 10;
+		}
+	</script>
+</html>
