@@ -44,7 +44,6 @@
 		}
 
 		box.onmousewheel = function(e) {
-			//console.log(e);
 			let vb = this.getViewBox();
 			let xRatio = e.offsetX / vb.width;
 			let yRatio = e.offsetY / vb.height;
@@ -54,13 +53,9 @@
 			if(e.deltaY > 0) { // zoom-out
 				vb.width += 100;
 				vb.height += 100;
-				// vb.x -= 50;
-				// vb.y -= 50;
 			} else { //zoom-in
 				vb.width -= 100;
 				vb.height -= 100;
-				// vb.x += 50;
-				// vb.y += 50;
 			}
 			vb.x = e.offsetX - vb.width / 2;
 			vb.y = e.offsetY - vb.height / 2;
