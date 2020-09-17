@@ -20,6 +20,7 @@
 	</body>
 	<script>
 		const box = document.querySelector('#box');
+		box.bfMx = box.bfMy = 0;
 
 		box.setViewBox = function(rect) {
 			this.viewBox.baseVal.x = rect.x;
@@ -36,11 +37,29 @@
 				height : this.viewBox.baseVal.height
 			};
 		}
+
+		box.onmousedown = function() {
+			this.isMDown = true;
+		}
+
+		box.onmouseup = function() {
+			this.isMDown = false;
+		}
+
 		box.onmousemove = function(e) {
 			let mx = document.querySelector('#mx');
 			let my = document.querySelector('#my');
 			mx.innerText = "mx : " + e.offsetX;
 			my.innerText = "my : " + e.offsetY;
+
+			if(this.isMDown) {
+				let vb = this.getViewBox();
+				vb.x += this.bfMx - e.offsetX;
+				vb.y += this.bfMy - e.offsetY;
+				this.setViewBox(vb);
+			}
+			this.bfMx = e.offsetX;
+			this.bfMy = e.offsetY;
 		}
 
 		box.onmousewheel = function(e) {
