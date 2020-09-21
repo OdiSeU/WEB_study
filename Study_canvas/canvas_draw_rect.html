@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      #cnvs {
+        background-color: #EEEEEE;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="cnvs" width="300" height="300"></canvas>
+  </body>
+  <script>
+    const cnvs = document.querySelector('#cnvs');
+    const ctx = cnvs.getContext('2d');
+
+    // x, y, width, height
+    ctx.fillRect(10, 20, 30, 40);
+    ctx.strokeRect(60, 20, 30, 40);
+  </script>
+</html>
