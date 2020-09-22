@@ -15,8 +15,8 @@
     const cnvs = document.querySelector('#cnvs');
     const ctx = cnvs.getContext('2d');
 
-    // x, y, radius, startAngle, endAngle
     ctx.beginPath();
+    // x, y, radius, startAngle, endAngle
     ctx.arc(20, 30, 15, 0, Math.PI*2);
     ctx.fill();
     ctx.closePath();
